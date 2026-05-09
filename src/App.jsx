@@ -1,8 +1,7 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import { useState, useEffect } from 'react'
 import './App.css'
+import { AnimatePresence } from 'framer-motion'
+
 import Hero from './components/sections/Hero'
 import Navbar from './components/layout/Navbar'
 import LogoMarquee from './components/sections/LogoMarquee'
@@ -11,29 +10,48 @@ import ServicesSection from './components/sections/ServicesSection'
 import StatsSection from './components/sections/StatsSection'
 import DemoMarque from './components/sections/DemoMarque'
 import CardChange from './components/sections/Cardchange'
-
-
+import WhatsNew from './components/sections/Whatsnew'
+import MarqueText from './components/sections/MarqueText'
+import Footer from './components/layout/Footer'
+import Preloader from './components/loader/Preloader'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulating the loading time
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2300); // Should be slightly longer than the Preloader animation delay
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <>
-     {/* <h1 className='text-5xl'>Om Namah Shivaya</h1> */}
-     <Navbar></Navbar>
-     <Hero/>
-     <div className='my-4'>
-      <LogoMarquee></LogoMarquee>
-     </div>
-     <div className='my-4'>
-      <FeaturedWork></FeaturedWork>
-     </div>
-     <div className='my-4'>
-      <ServicesSection></ServicesSection>
-     </div>
-     <StatsSection></StatsSection>
-     <DemoMarque></DemoMarque>
-     <CardChange></CardChange>
+      <AnimatePresence mode="wait">
+        {isLoading && <Preloader />}
+      </AnimatePresence>
+
+      <main className={isLoading ? "h-screen overflow-hidden" : ""}>
+        <Navbar />
+        <Hero />
+        <div className='my-4'>
+          <LogoMarquee />
+        </div>
+        <div className='my-4'>
+          <FeaturedWork />
+        </div>
+        <div className='my-4'>
+          <ServicesSection />
+        </div>
+        <StatsSection />
+        <DemoMarque />
+        <CardChange />
+        <WhatsNew />
+        <MarqueText />
+        <Footer />
+      </main>
     </>
   )
 }

@@ -58,17 +58,16 @@ export default function HeroSection() {
       </div>
 
       {/* Navbar Overlay */}
-      <nav className="absolute top-0 left-0 right-0 z-50 flex justify-between items-center px-6 md:px-12 py-6 md:py-10 text-white">
+      <nav className="absolute top-0 left-0 right-0 z-50 flex flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 md:px-12 md:py-6 text-white">
         <div className="text-xl md:text-2xl font-bold tracking-tighter italic">
           Rise at Seven<span className="not-italic">®</span>
         </div>
 
-        {/* CTA Button & Mobile Toggle */}
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-3 justify-between sm:justify-end">
           <motion.button
-            initial={{ borderRadius: "24px" }}
-            whileHover={{ borderRadius: "8px" }}
-            className="hidden sm:flex bg-white text-black px-6 py-2.5 text-[10px] font-black uppercase tracking-[0.2em] items-center gap-2 transition-all hover:bg-[#b3f6e1]"
+            initial={{ borderRadius: '24px' }}
+            whileHover={{ borderRadius: '8px' }}
+            className="hidden sm:inline-flex bg-white text-black px-5 py-2.5 text-[10px] font-black uppercase tracking-[0.2em] items-center gap-2 transition-all hover:bg-[#b3f6e1]"
           >
             Get In Touch <ArrowUpRight size={14} />
           </motion.button>
@@ -83,22 +82,24 @@ export default function HeroSection() {
       </nav>
 
       {/* Hero Content */}
-      <div className="relative z-10 h-full flex flex-col justify-center items-center text-center px-6">
-        <h1 className="text-white text-[13vw] sm:text-[11vw] lg:text-[8.5vw] font-bold leading-[0.9] tracking-tighter uppercase flex flex-col items-center">
-          <span className="block">We Create</span>
-          <span className="flex items-center gap-2 md:gap-5">
-            Category 
-            <motion.div 
-              initial={{ width: 0, opacity: 0 }}
-              animate={{ width: "auto", opacity: 1 }}
-              transition={{ delay: 0.5, duration: 0.8 }}
-              className="h-[8vw] sm:h-[7vw] lg:h-[6vw] w-[12vw] sm:w-[10vw] lg:w-[9vw] bg-white rounded-lg md:rounded-xl overflow-hidden self-center"
-            >
-              <img src={INNER_IMAGE} className="w-full h-full object-cover" alt="visual" />
-            </motion.div>
-            Leaders
-          </span>
-        </h1>
+      <div className="relative z-10 h-full flex flex-col justify-center items-center text-center px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-6xl">
+          <h1 className="text-white font-bold leading-[0.9] tracking-tighter uppercase">
+            <span className="block text-[13vw] sm:text-[11vw] md:text-[9vw] lg:text-[7vw]">We Create</span>
+            <span className="mt-4 inline-flex flex-col items-center gap-4 md:flex-row md:gap-5">
+              <span className="text-[5vw] sm:text-[4.5vw] md:text-[3.5vw] lg:text-[2.6vw]">Category</span>
+              <motion.div
+                initial={{ width: 0, opacity: 0 }}
+                animate={{ width: 'auto', opacity: 1 }}
+                transition={{ delay: 0.5, duration: 0.8 }}
+                className="h-[18vw] min-h-[80px] w-[35vw] max-w-[220px] sm:h-[16vw] sm:w-[28vw] md:h-[12vw] md:w-[22vw] lg:h-[9vw] lg:w-[18vw] bg-white rounded-lg md:rounded-xl overflow-hidden self-center"
+              >
+                <img src={INNER_IMAGE} className="w-full h-full object-cover" alt="visual" />
+              </motion.div>
+              <span className="text-[5vw] sm:text-[4.5vw] md:text-[3.5vw] lg:text-[2.6vw]">Leaders</span>
+            </span>
+          </h1>
+        </div>
       </div>
 
       {/* Mobile Drawer */}
@@ -109,7 +110,7 @@ export default function HeroSection() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0, y: "-100%", transition: { duration: 0.4 } }}
-            className="fixed inset-0 z-[100] bg-black flex flex-col p-8 perspective-1000"
+            className="fixed inset-0 z-[100] bg-black flex flex-col p-6 sm:p-8 overflow-y-auto"
           >
             {/* Drawer Header */}
             <div className="flex justify-between items-center mb-16">
