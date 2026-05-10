@@ -13,6 +13,8 @@ export default function HeroSection() {
   const linkRefs = useRef([])
   const bgRefs = useRef([])
   const tlRefs = useRef([])
+  const [scrolled, setScrolled] = useState(false)
+  const [showNavLinks, setShowNavLinks] = useState(true)
 
   const navLinks = [
     { name: 'Services +', href: '#' },
@@ -41,6 +43,30 @@ export default function HeroSection() {
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : 'unset'
   }, [mobileOpen])
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const threshold = window.innerHeight * 0.1
+      const isScrolled = window.scrollY > threshold
+      setScrolled(isScrolled)
+      if (isScrolled) {
+        setShowNavLinks(true)
+      }
+    }
+
+    handleScroll()
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  useEffect(() => {
+    if (scrolled) {
+      return
+    }
+
+    const timer = setTimeout(() => setShowNavLinks(false), 3000)
+    return () => clearTimeout(timer)
+  }, [scrolled])
 
   useGSAP(() => {
     if (mobileOpen) {
@@ -80,7 +106,7 @@ export default function HeroSection() {
           </div>
 
           {/* Desktop nav links */}
-          <div className="hidden lg:flex items-center gap-0.5">
+          <div className={`${showNavLinks ? 'flex' : 'hidden'} lg:flex items-center gap-0.5`}>
             {navLinks.map((link, i) => (
               <div
                 key={link.name}
@@ -96,7 +122,7 @@ export default function HeroSection() {
                 
                 <a  ref={el => (linkRefs.current[i] = el)}
                   href={link.href}
-                  className="relative z-10 inline-flex items-center gap-1.5 text-white font-semibold tracking-tight rounded-full cursor-pointer no-underline text-[11px] px-2.5 py-1.5 md:text-[12px] md:px-3 md:py-1.5 lg:text-[13px] lg:px-[15px] lg:py-2"
+                  className={`relative z-10 inline-flex items-center gap-1.5 font-semibold tracking-tight rounded-full cursor-pointer no-underline text-[11px] px-2.5 py-1.5 md:text-[12px] md:px-3 md:py-1.5 lg:text-[13px] lg:px-[15px] lg:py-2 ${scrolled ? 'bg-gray-200 text-black' : 'text-white'}`}
                 >
                   {link.name}
                   {link.badge && (
