@@ -52,7 +52,13 @@ export default function MarqueText() {
   return (
     <div
       ref={wrapperRef}
-      className="overflow-hidden h-screen flex items-center"
+      className="
+        overflow-hidden 
+        h-screen 
+        flex items-center
+        -mt-10 sm:-mt-12 md:-mt-16
+        -mb-10 sm:-mb-12 md:-mb-16
+      "
     >
       <h3
         ref={textRef}
@@ -64,7 +70,7 @@ export default function MarqueText() {
           lineHeight: 1.1,
         }}
       >
-    A Proud Bangladeshi
+        A Proud Bangladeshi
       </h3>
     </div>
   );

@@ -4,6 +4,7 @@ import oneImg from "../../assets/one.jpg";
 import twoImg from "../../assets/two.jpg";
 import threeImg from "../../assets/three.jpg";
 
+/* ─── data ─── */
 const articles = [
   {
     id: 1,
@@ -31,190 +32,137 @@ const articles = [
   },
 ];
 
-/* ─── Green circle cursor with left arrow ─── */
+/* ─── Green Cursor ─── */
 const GreenCursor = () => (
-  <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-    {/* drop shadow */}
+  <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
     <circle cx="34" cy="34" r="28" fill="rgba(0,0,0,0.18)" />
-    {/* green circle */}
     <circle cx="32" cy="32" r="28" fill="#22c55e" />
-    {/* inner subtle ring */}
-    <circle cx="32" cy="32" r="24" stroke="rgba(255,255,255,0.2)" strokeWidth="1" fill="none" />
-    {/* left-pointing arrow */}
-    <path
-      d="M36 22 L24 32 L36 42"
-      stroke="white"
-      strokeWidth="3.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      fill="none"
-    />
-    <path
-      d="M24 32 H42"
-      stroke="white"
-      strokeWidth="3.5"
-      strokeLinecap="round"
-      fill="none"
-    />
+    <circle cx="32" cy="32" r="24" stroke="rgba(255,255,255,0.2)" />
+    <path d="M36 22 L24 32 L36 42" stroke="white" strokeWidth="3.5" />
+    <path d="M24 32 H42" stroke="white" strokeWidth="3.5" />
   </svg>
 );
 
-/* ─── Clock icon ─── */
+/* ─── Clock ─── */
 const ClockIcon = () => (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor">
     <circle cx="12" cy="12" r="10" />
     <polyline points="12 6 12 12 16 14" />
   </svg>
 );
 
-/* ─── Top-right arrow for button ─── */
+/* ─── Arrow ─── */
 const CornerArrow = () => (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor">
     <line x1="7" y1="17" x2="17" y2="7" />
     <polyline points="7 7 17 7 17 17" />
   </svg>
 );
 
-/* ─── Avatar initials ─── */
+/* ─── Avatar ─── */
 const Avatar = ({ name }) => {
   const initials = name.split(" ").map((n) => n[0]).join("").slice(0, 2);
   const bg = name === "Ray Saddiq" ? "#2563eb" : name === "Carrie Rose" ? "#7c3aed" : "#374151";
+
   return (
-    <span style={{
-      display: "inline-flex", alignItems: "center", justifyContent: "center",
-      width: 22, height: 22, borderRadius: "50%", background: bg,
-      color: "#fff", fontSize: 10, fontWeight: 700, flexShrink: 0, letterSpacing: 0.5,
-    }}>
+    <span className="flex items-center justify-center w-6 h-6 rounded-full text-white text-[10px] font-bold"
+      style={{ background: bg }}>
       {initials}
     </span>
   );
 };
 
-/* ════════════════════════════
-   Single Article Card
-════════════════════════════ */
+/* ═════════════════════ Card ═════════════════════ */
 function ArticleCard({ article, index }) {
   const [hovered, setHovered] = useState(false);
   const wrapRef = useRef(null);
 
   const rawX = useMotionValue(0);
   const rawY = useMotionValue(0);
-  const cfg = { stiffness: 280, damping: 24, mass: 0.5 };
-  const cx = useSpring(rawX, cfg);
-  const cy = useSpring(rawY, cfg);
+  const cx = useSpring(rawX, { stiffness: 280, damping: 24 });
+  const cy = useSpring(rawY, { stiffness: 280, damping: 24 });
 
   const handleMouseMove = (e) => {
     const rect = wrapRef.current?.getBoundingClientRect();
     if (!rect) return;
-    rawX.set(e.clientX - rect.left - 32); // 32 = half of 64px cursor
+    rawX.set(e.clientX - rect.left - 32);
     rawY.set(e.clientY - rect.top - 32);
   };
 
   return (
     <motion.article
-      className="flex flex-col"
+      className="flex flex-col w-full"
       style={{ cursor: "none" }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       initial={{ opacity: 0, y: 36 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.6, delay: index * 0.12, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.6, delay: index * 0.12 }}
     >
-      {/* ── Image wrapper ── */}
+      {/* IMAGE */}
       <div
         ref={wrapRef}
         onMouseMove={handleMouseMove}
-        style={{ cursor: "none" }}
-        className="relative w-full rounded-2xl overflow-hidden mb-[14px]"
-        // inline style for aspect ratio — Tailwind JIT may not pick up aspect-[4/3] always
-        // Using style to be safe
+        className="relative w-full rounded-xl sm:rounded-2xl overflow-hidden mb-3 sm:mb-4"
       >
-        {/* Force 4:3 ratio */}
-        <div style={{ paddingBottom: "75%", position: "relative" }}>
+        <div className="relative pb-[75%]">
 
-          {/* actual photo */}
           <motion.img
             src={article.image}
-            alt={article.title}
             className="absolute inset-0 w-full h-full object-cover"
             animate={{ scale: hovered ? 1.06 : 1 }}
-            transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+            transition={{ duration: 0.6 }}
           />
 
-          {/* BLUR + DIM overlay — backdrop-filter blur */}
           <motion.div
-            className="absolute inset-0 pointer-events-none"
+            className="absolute inset-0"
             style={{
               backdropFilter: hovered ? "blur(6px)" : "blur(0px)",
-              WebkitBackdropFilter: hovered ? "blur(6px)" : "blur(0px)",
-              background: hovered ? "rgba(0,0,0,0.35)" : "rgba(0,0,0,0)",
-              transition: "backdrop-filter 0.4s ease, -webkit-backdrop-filter 0.4s ease, background 0.4s ease",
+              background: hovered ? "rgba(0,0,0,0.35)" : "transparent",
             }}
           />
 
-          {/* Framer Motion handles opacity for the overlay separately */}
-          <motion.div
-            className="absolute inset-0 pointer-events-none"
-            style={{ backdropFilter: "blur(7px)", WebkitBackdropFilter: "blur(7px)" }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: hovered ? 1 : 0 }}
-            transition={{ duration: 0.38, ease: "easeInOut" }}
-          />
-
-          {/* Green circle cursor — tracks mouse */}
+          {/* Cursor */}
           <AnimatePresence>
             {hovered && (
               <motion.div
-                key="cursor"
-                className="absolute top-0 left-0 pointer-events-none z-30"
-                style={{
-                  x: cx,
-                  y: cy,
-                  filter: "drop-shadow(0 4px 12px rgba(34,197,94,0.5))",
-                }}
+                className="absolute top-0 left-0 pointer-events-none z-30 hidden sm:block"
+                style={{ x: cx, y: cy }}
                 initial={{ opacity: 0, scale: 0.3 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.2 }}
-                transition={{ type: "spring", stiffness: 380, damping: 20 }}
+                exit={{ opacity: 0 }}
               >
                 <GreenCursor />
               </motion.div>
             )}
           </AnimatePresence>
 
-          {/* News tag */}
           {article.tag && (
-            <span className="absolute top-3 left-3 z-10 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-semibold text-gray-900">
+            <span className="absolute top-2 sm:top-3 left-2 sm:left-3 bg-white/90 rounded-full px-2 sm:px-3 py-1 text-[10px] sm:text-xs font-semibold">
               {article.tag}
             </span>
           )}
         </div>
       </div>
 
-      {/* ── Meta chips ── */}
-      <div className="flex items-center gap-2 mb-[10px]">
-        <span className="flex items-center gap-[5px] bg-white border border-[#e0dedd] rounded-full px-[11px] py-[4px] pl-[7px] text-[12.5px] font-medium text-gray-700 whitespace-nowrap">
+      {/* META */}
+      <div className="flex flex-wrap gap-2 mb-2 sm:mb-3">
+        <span className="flex items-center gap-2 bg-white border rounded-full px-3 py-1 text-[11px] sm:text-[12.5px]">
           <Avatar name={article.author} />
           {article.author}
         </span>
-        <span className="flex items-center gap-[5px] bg-white border border-[#e0dedd] rounded-full px-[11px] py-[4px] pl-[7px] text-[12.5px] font-medium text-gray-700 whitespace-nowrap">
+
+        <span className="flex items-center gap-2 bg-white border rounded-full px-3 py-1 text-[11px] sm:text-[12.5px]">
           <ClockIcon />
           {article.readTime}
         </span>
       </div>
 
-      {/* ── Title ── */}
+      {/* TITLE */}
       <motion.p
-        className="m-0 font-extrabold leading-snug tracking-tight"
-        style={{
-          fontFamily: "'Syne', sans-serif",
-          fontSize: "clamp(15px, 1.5vw, 19px)",
-        }}
-        animate={{ color: hovered ? "#16a34a" : "#111111" }}
-        transition={{ duration: 0.25 }}
+        className="font-extrabold leading-snug text-[14px] sm:text-[16px] md:text-[18px]"
+        animate={{ color: hovered ? "#16a34a" : "#111" }}
       >
         {article.title}
       </motion.p>
@@ -222,77 +170,33 @@ function ArticleCard({ article, index }) {
   );
 }
 
-/* ════════════════════════════
-   Main Section
-════════════════════════════ */
+/* ═════════════════════ Section ═════════════════════ */
 export default function WhatsNew() {
   return (
-    <>
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap"
-      />
+    <section className="bg-[#EEECEA] w-full px-4 sm:px-6 md:px-10 lg:px-12 py-10 sm:py-14 md:py-16 lg:py-[72px]">
 
-      <section
-        className="bg-[#EEECEA] w-full"
-        style={{
-          padding: "56px 48px 72px",
-          fontFamily: "'DM Sans', sans-serif",
-        }}
-      >
-        {/* Header */}
-        <motion.div
-          className="flex items-center justify-between mb-7 flex-wrap gap-4"
-          initial={{ opacity: 0, y: -16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-        >
-          <h2
-            className="flex items-center gap-3 m-0 font-extrabold leading-none text-gray-900"
-            style={{
-              fontFamily: "'Syne', sans-serif",
-              fontSize: "clamp(38px, 5vw, 64px)",
-              letterSpacing: "-1.5px",
-            }}
-          >
-            What's
-            <img
-              src={twoImg}
-              alt="thumb"
-              className="rounded-[10px] object-cover inline-block"
-              style={{
-                width: "clamp(44px, 5vw, 60px)",
-                height: "clamp(44px, 5vw, 60px)",
-                position: "relative",
-                top: "-2px",
-              }}
-            />
-            New
-          </h2>
+      {/* HEADER */}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 sm:mb-8">
+        <h2 className="flex items-center gap-2 sm:gap-3 font-extrabold text-[28px] sm:text-[40px] md:text-[56px] leading-none">
+          What's
+          <img src={twoImg} className="w-10 h-10 sm:w-12 sm:h-12 rounded-md" />
+          New
+        </h2>
 
-          <a
-            href="#"
-            className="flex items-center gap-1.5 bg-white border border-gray-200 rounded-full px-5 py-2.5 text-sm font-medium text-gray-900 no-underline transition-all hover:bg-gray-50 hover:shadow-md"
-          >
-            Explore More Thoughts <CornerArrow />
-          </a>
-        </motion.div>
+        <a className="flex items-center gap-2 bg-white border rounded-full px-4 py-2 text-sm">
+          Explore More <CornerArrow />
+        </a>
+      </div>
 
-        {/* Divider */}
-        <motion.div
-          className="border-t border-[#d5d2cf] mb-8"
-          initial={{ scaleX: 0, originX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ duration: 0.65, delay: 0.15, ease: "easeOut" }}
-        />
+      {/* DIVIDER */}
+      <div className="border-t mb-6 sm:mb-8" />
 
-        {/* Grid — 3 col lg, 2 col md, 1 col sm */}
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {articles.map((article, i) => (
-            <ArticleCard key={article.id} article={article} index={i} />
-          ))}
-        </div>
-      </section>
-    </>
+      {/* GRID */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {articles.map((article, i) => (
+          <ArticleCard key={article.id} article={article} index={i} />
+        ))}
+      </div>
+    </section>
   );
 }

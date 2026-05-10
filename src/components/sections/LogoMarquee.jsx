@@ -2,11 +2,9 @@ import { useRef } from 'react'
 import { gsap } from 'gsap'
 import { useGSAP } from '@gsap/react'
 
-
 import Logo1 from '../../assets/logo1.png'
 import Logo2 from '../../assets/logo2.png'
 import Logo3 from '../../assets/logo3.png'
-
 
 const clientLogos = [
   { name: 'Sixt', src: Logo1 },
@@ -23,21 +21,31 @@ function LogoItem({ logo }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        height: '120px', 
+        height: '120px',
+        lineHeight: 0,
       }}
     >
       {logo.src ? (
-        <img 
-          src={logo.src} 
-          alt={logo.name} 
-          style={{ 
-            height: '65px', 
-            width: 'auto', 
-            filter: 'grayscale(100%) brightness(0)' 
-          }} 
+        <img
+          src={logo.src}
+          alt={logo.name}
+          style={{
+            height: '65px',
+            width: 'auto',
+            filter: 'grayscale(100%) brightness(0)',
+            display: 'block',
+          }}
         />
       ) : (
-        <span style={{ fontSize: '24px', fontWeight: '900', color: '#000', textTransform: 'uppercase' }}>
+        <span
+          style={{
+            fontSize: '24px',
+            fontWeight: '900',
+            color: '#000',
+            textTransform: 'uppercase',
+            lineHeight: 1,
+          }}
+        >
           {logo.name}
         </span>
       )}
@@ -67,6 +75,7 @@ export default function LogoMarquee() {
         background: '#ececec',
         overflow: 'hidden',
         padding: '40px 0',
+        lineHeight: 0,
       }}
     >
       <div
@@ -85,6 +94,7 @@ export default function LogoMarquee() {
             paddingLeft: '40px',
             paddingRight: '20px',
             zIndex: 10,
+            lineHeight: 1,
           }}
         >
           The agency behind…
@@ -96,28 +106,47 @@ export default function LogoMarquee() {
             flex: 1,
             position: 'relative',
             overflow: 'hidden',
-           
-            WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 80%, transparent)',
-            maskImage: 'linear-gradient(to right, transparent, black 10%, black 80%, transparent)',
+            WebkitMaskImage:
+              'linear-gradient(to right, transparent, black 10%, black 80%, transparent)',
+            maskImage:
+              'linear-gradient(to right, transparent, black 10%, black 80%, transparent)',
           }}
         >
           {/* Blur Layers */}
-          <div style={{
-            position: 'absolute', top: 0, left: 0, bottom: 0, width: '80px',
-            backdropFilter: 'blur(8px)', zIndex: 5, pointerEvents: 'none'
-          }} />
-          <div style={{
-            position: 'absolute', top: 0, right: 0, bottom: 0, width: '80px',
-            backdropFilter: 'blur(8px)', zIndex: 5, pointerEvents: 'none'
-          }} />
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              bottom: 0,
+              width: '80px',
+              backdropFilter: 'blur(8px)',
+              zIndex: 5,
+              pointerEvents: 'none',
+            }}
+          />
+
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              bottom: 0,
+              width: '80px',
+              backdropFilter: 'blur(8px)',
+              zIndex: 5,
+              pointerEvents: 'none',
+            }}
+          />
 
           {/* Scrolling Track */}
           <div
             ref={trackRef}
-            style={{ 
-              display: 'flex', 
+            style={{
+              display: 'flex',
               width: 'max-content',
-              alignItems: 'center' 
+              alignItems: 'center',
+              lineHeight: 0,
             }}
           >
             {[...clientLogos, ...clientLogos, ...clientLogos].map((logo, i) => (

@@ -69,10 +69,8 @@ export default function ServicesSection() {
   const containerRef = useRef(null)
   const rightRef = useRef(null)
   const [activeIndex, setActiveIndex] = useState(0)
-  const [hoveredIndex, setHoveredIndex] = useState(null)
   const [imageHovered, setImageHovered] = useState(false)
 
-  // Smooth cursor follower for right panel
   const cursorX = useMotionValue(0)
   const cursorY = useMotionValue(0)
   const springX = useSpring(cursorX, { stiffness: 120, damping: 22 })
@@ -88,8 +86,7 @@ export default function ServicesSection() {
   useGSAP(() => {
     const mm = gsap.matchMedia()
 
-    mm.add('(min-width: 768px)', () => {
-      // Pin right side
+    mm.add('(min-width: 1024px)', () => {
       ScrollTrigger.create({
         trigger: containerRef.current,
         start: 'top top',
@@ -98,7 +95,6 @@ export default function ServicesSection() {
         pinSpacing: false,
       })
 
-      // Per-item scroll triggers
       projects.forEach((_, i) => {
         ScrollTrigger.create({
           trigger: `.proj-${i}`,
@@ -106,69 +102,37 @@ export default function ServicesSection() {
           end: 'bottom 40%',
           onEnter: () => {
             setActiveIndex(i)
-            gsap.to(`.proj-${i}`, {
-              x: 14,
-              opacity: 1,
-              color: projects[i].accent,
-              duration: 0.55,
-              ease: 'power3.out',
-            })
+            gsap.to(`.proj-${i}`, { x: 14, opacity: 1, color: projects[i].accent, duration: 0.55, ease: 'power3.out' })
             gsap.to(`.proj-num-${i}`, { opacity: 1, duration: 0.4 })
           },
           onLeave: () => {
-            gsap.to(`.proj-${i}`, {
-              x: 0,
-              opacity: 0.22,
-              color: '#ffffff',
-              duration: 0.55,
-              ease: 'power3.inOut',
-            })
+            gsap.to(`.proj-${i}`, { x: 0, opacity: 0.22, color: '#ffffff', duration: 0.55, ease: 'power3.inOut' })
             gsap.to(`.proj-num-${i}`, { opacity: 0, duration: 0.3 })
           },
           onEnterBack: () => {
             setActiveIndex(i)
-            gsap.to(`.proj-${i}`, {
-              x: 14,
-              opacity: 1,
-              color: projects[i].accent,
-              duration: 0.55,
-              ease: 'power3.out',
-            })
+            gsap.to(`.proj-${i}`, { x: 14, opacity: 1, color: projects[i].accent, duration: 0.55, ease: 'power3.out' })
             gsap.to(`.proj-num-${i}`, { opacity: 1, duration: 0.4 })
           },
           onLeaveBack: () => {
-            gsap.to(`.proj-${i}`, {
-              x: 0,
-              opacity: 0.22,
-              color: '#ffffff',
-              duration: 0.55,
-              ease: 'power3.inOut',
-            })
+            gsap.to(`.proj-${i}`, { x: 0, opacity: 0.22, color: '#ffffff', duration: 0.55, ease: 'power3.inOut' })
             gsap.to(`.proj-num-${i}`, { opacity: 0, duration: 0.3 })
           },
         })
       })
 
-      // Set first item active on load
       gsap.set('.proj-0', { opacity: 1, x: 14, color: projects[0].accent })
       gsap.set('.proj-num-0', { opacity: 1 })
     })
 
-    // Mobile: simple fade in
-    mm.add('(max-width: 767px)', () => {
+    mm.add('(max-width: 1023px)', () => {
       projects.forEach((_, i) => {
         gsap.fromTo(
-          `.proj-${i}`,
-          { opacity: 0, y: 30 },
+          `.mob-proj-${i}`,
+          { opacity: 0, y: 40 },
           {
-            opacity: 1,
-            y: 0,
-            duration: 0.7,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: `.proj-${i}`,
-              start: 'top 80%',
-            },
+            opacity: 1, y: 0, duration: 0.65, ease: 'power3.out',
+            scrollTrigger: { trigger: `.mob-proj-${i}`, start: 'top 88%' },
           }
         )
       })
@@ -180,56 +144,129 @@ export default function ServicesSection() {
   return (
     <section
       ref={containerRef}
-      style={{
-        backgroundColor: '#080808',
-        color: 'white',
-        position: 'relative',
-        minHeight: '100vh',
-      }}
+      className="relative bg-[#080808] text-white"
     >
-      {/* Noise grain overlay */}
-      <div style={{
-        position: 'fixed',
-        inset: 0,
-        pointerEvents: 'none',
-        zIndex: 0,
-        opacity: 0.035,
-        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-        backgroundSize: '150px',
-      }} />
+      {/* Grain — absolute not fixed, scoped to this section */}
+      <div
+        className="absolute inset-0 pointer-events-none z-0 opacity-[0.04]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+          backgroundSize: '150px',
+        }}
+      />
 
-      <div style={{
-        display: 'flex',
-        flexDirection: 'row',
-        position: 'relative',
-        zIndex: 1,
-      }}>
+      {/* ══════════════════════════════════════
+          MOBILE + TABLET  (hidden on lg+)
+      ══════════════════════════════════════ */}
+      <div className="block lg:hidden relative z-10">
 
-        {/* ─── LEFT: text list ─── */}
-        <div style={{
-          width: '50%',
-          padding: 'clamp(80px, 12vw, 160px) clamp(24px, 5vw, 72px)',
-        }}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-            marginBottom: 'clamp(60px, 10vw, 120px)',
-          }}>
-            <span style={{
-              width: 8, height: 8, borderRadius: '50%',
-              background: active.accent,
-              display: 'inline-block',
-              transition: 'background 0.5s ease',
-            }} />
-            <p style={{
-              fontSize: '12px',
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              opacity: 0.5,
-              margin: 0,
-              fontFamily: "'DM Mono', monospace",
-            }}>
+        {/* Section header */}
+        <div className="px-5 pt-14 pb-8 sm:px-8 sm:pt-16 sm:pb-10 md:px-12 md:pt-20 md:pb-12">
+          <div className="flex items-center gap-2.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-white/40 inline-block" />
+            <p className="text-[10px] sm:text-[11px] tracking-[0.22em] uppercase text-white/40 m-0 font-mono">
+              Featured Work
+            </p>
+          </div>
+        </div>
+
+        {/* Cards */}
+        <div className="px-5 pb-16 sm:px-8 sm:pb-20 md:px-12 md:pb-24 flex flex-col gap-6 sm:gap-8 md:gap-10">
+          {projects.map((item, i) => (
+            <div
+              key={i}
+              className={`mob-proj-${i} opacity-0`}
+            >
+              <div className="bg-[#111111] rounded-2xl overflow-hidden border border-white/[0.06]">
+
+                {/* Image */}
+                <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] overflow-hidden">
+                  <img
+                    src={item.img}
+                    alt={item.title}
+                    className="w-full h-full object-cover"
+                  />
+                  {/* color grade */}
+                  <div
+                    className="absolute inset-0 mix-blend-color pointer-events-none"
+                    style={{ background: `${item.accent}20` }}
+                  />
+                  {/* gradient overlay */}
+                  <div
+                    className="absolute inset-0"
+                    style={{ background: `linear-gradient(to top, ${item.card}e8 0%, transparent 55%)` }}
+                  />
+                  {/* Tag on image */}
+                  <span
+                    className="absolute top-3 left-3 sm:top-4 sm:left-4 px-2.5 py-1 rounded-full text-[9px] sm:text-[10px] tracking-[0.14em] uppercase font-mono"
+                    style={{
+                      background: `${item.accent}25`,
+                      border: `1px solid ${item.accent}55`,
+                      color: item.accent,
+                    }}
+                  >
+                    {item.tag}
+                  </span>
+                  {/* Year on image */}
+                  <span className="absolute top-3 right-3 sm:top-4 sm:right-4 text-[10px] font-mono text-white/40 tracking-[0.08em]">
+                    {item.year}
+                  </span>
+                </div>
+
+                {/* Card body */}
+                <div className="p-4 sm:p-5 md:p-6 flex items-start justify-between gap-4">
+                  <div className="flex-1 min-w-0">
+                    <span
+                      className="text-[10px] font-mono tracking-[0.1em] block mb-1.5"
+                      style={{ color: item.accent }}
+                    >
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <h2
+                      className="text-[22px] sm:text-[26px] md:text-[30px] font-black leading-none tracking-[-0.03em] mb-2"
+                      style={{ fontFamily: "'Syne', sans-serif", color: '#ffffff' }}
+                    >
+                      {item.title}
+                    </h2>
+                    <p className="text-[11px] sm:text-[12px] text-white/45 font-mono leading-relaxed m-0">
+                      {item.desc}
+                    </p>
+                  </div>
+
+                  {/* Arrow */}
+                  <div
+                    className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border flex items-center justify-center text-base shrink-0 mt-1"
+                    style={{ borderColor: `${item.accent}70`, color: item.accent }}
+                  >
+                    ↗
+                  </div>
+                </div>
+
+                {/* Bottom accent bar */}
+                <div
+                  className="h-[2px] w-full"
+                  style={{ background: `linear-gradient(to right, ${item.accent}80, transparent)` }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ══════════════════════════════════════
+          DESKTOP  lg+ — pinned split layout
+      ══════════════════════════════════════ */}
+      <div className="hidden lg:flex flex-row relative z-10">
+
+        {/* LEFT: scrollable list */}
+        <div className="w-1/2 px-[clamp(32px,5vw,80px)] py-[clamp(80px,10vw,140px)]">
+
+          <div className="flex items-center gap-2.5 mb-[clamp(60px,9vw,120px)]">
+            <span
+              className="w-2 h-2 rounded-full inline-block transition-all duration-500"
+              style={{ background: active.accent }}
+            />
+            <p className="text-[12px] tracking-[0.2em] uppercase opacity-50 m-0 font-mono">
               Featured Work
             </p>
           </div>
@@ -237,113 +274,60 @@ export default function ServicesSection() {
           {projects.map((item, i) => (
             <div
               key={i}
-              className={`proj-${i}`}
-              style={{
-                marginBottom: 'clamp(40px, 7vw, 90px)',
-                opacity: 0.22,
-                cursor: 'pointer',
-                position: 'relative',
-                paddingLeft: '28px',
-                color: '#ffffff',
-                transition: 'color 0.4s ease',
-              }}
+              className={`proj-${i} mb-[clamp(44px,7vw,96px)] opacity-[0.22] cursor-pointer relative pl-7 text-white`}
               onMouseEnter={() => {
-                setHoveredIndex(i)
                 gsap.to(`.proj-hover-line-${i}`, { scaleX: 1, duration: 0.4, ease: 'power3.out' })
                 gsap.to(`.proj-tag-${i}`, { opacity: 1, x: 0, duration: 0.35 })
               }}
               onMouseLeave={() => {
-                setHoveredIndex(null)
                 gsap.to(`.proj-hover-line-${i}`, { scaleX: 0, duration: 0.35, ease: 'power3.inOut' })
                 gsap.to(`.proj-tag-${i}`, { opacity: 0, x: -8, duration: 0.3 })
               }}
             >
-              {/* left accent bar */}
-              <div style={{
-                position: 'absolute',
-                left: 0,
-                top: '50%',
-                transform: 'translateY(-50%)',
-                width: '3px',
-                height: '70%',
-                borderRadius: '2px',
-                background: item.accent,
-                opacity: activeIndex === i ? 1 : 0,
-                transition: 'opacity 0.4s ease',
-              }} />
+              {/* Left accent bar */}
+              <div
+                className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-[70%] rounded-sm transition-opacity duration-300"
+                style={{ background: item.accent, opacity: activeIndex === i ? 1 : 0 }}
+              />
 
-              {/* index number */}
+              {/* Index */}
               <span
-                className={`proj-num-${i}`}
-                style={{
-                  fontSize: '11px',
-                  fontFamily: "'DM Mono', monospace",
-                  opacity: 0,
-                  letterSpacing: '0.1em',
-                  color: item.accent,
-                  display: 'block',
-                  marginBottom: '4px',
-                }}
+                className={`proj-num-${i} text-[11px] font-mono opacity-0 tracking-[0.1em] block mb-1`}
+                style={{ color: item.accent }}
               >
                 {String(i + 1).padStart(2, '0')}
               </span>
 
-              {/* title */}
-              <div style={{
-                fontSize: 'clamp(32px, 5.5vw, 72px)',
-                fontWeight: 900,
-                lineHeight: 0.95,
-                letterSpacing: '-0.04em',
-                fontFamily: "'Syne', sans-serif",
-                display: 'flex',
-                alignItems: 'baseline',
-                gap: '12px',
-                flexWrap: 'wrap',
-              }}>
+              {/* Title */}
+              <div
+                className="flex items-baseline gap-3 flex-wrap"
+                style={{
+                  fontSize: 'clamp(30px, 5vw, 68px)',
+                  fontWeight: 900,
+                  lineHeight: 0.95,
+                  letterSpacing: '-0.04em',
+                  fontFamily: "'Syne', sans-serif",
+                }}
+              >
                 {item.title}
-                <span style={{
-                  fontSize: 'clamp(11px, 1.2vw, 13px)',
-                  opacity: 0.45,
-                  fontWeight: 400,
-                  letterSpacing: '0.05em',
-                  fontFamily: "'DM Mono', monospace",
-                }}>
+                <span className="text-[clamp(11px,1.1vw,13px)] opacity-40 font-normal tracking-[0.05em] font-mono">
                   [{item.year}]
                 </span>
               </div>
 
-              {/* hover underline */}
+              {/* Hover underline */}
               <div
-                className={`proj-hover-line-${i}`}
-                style={{
-                  position: 'absolute',
-                  bottom: '-6px',
-                  left: '28px',
-                  right: 0,
-                  height: '1px',
-                  background: item.accent,
-                  transformOrigin: 'left',
-                  transform: 'scaleX(0)',
-                }}
+                className={`proj-hover-line-${i} absolute bottom-[-6px] left-7 right-0 h-px origin-left scale-x-0`}
+                style={{ background: item.accent }}
               />
 
-              {/* tag pill */}
+              {/* Tag pill */}
               <span
-                className={`proj-tag-${i}`}
+                className={`proj-tag-${i} inline-block mt-2 px-2.5 py-0.5 rounded-full text-[10px] tracking-[0.12em] uppercase font-mono opacity-0 -translate-x-2`}
                 style={{
-                  display: 'inline-block',
-                  marginTop: '8px',
-                  padding: '3px 10px',
-                  borderRadius: '100px',
-                  fontSize: '10px',
-                  letterSpacing: '0.12em',
-                  textTransform: 'uppercase',
                   background: `${item.accent}22`,
                   border: `1px solid ${item.accent}55`,
                   color: item.accent,
-                  fontFamily: "'DM Mono', monospace",
-                  opacity: 0,
-                  transform: 'translateX(-8px)',
                 }}
               >
                 {item.tag}
@@ -352,44 +336,27 @@ export default function ServicesSection() {
           ))}
         </div>
 
-        {/* ─── RIGHT: pinned image panel ─── */}
+        {/* RIGHT: pinned image panel */}
         <div
-          className="right-panel"
+          className="right-panel w-1/2 h-screen flex items-center justify-center relative overflow-hidden"
           ref={rightRef}
           onMouseMove={handleMouseMove}
-          style={{
-            width: '50%',
-            height: '100vh',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            position: 'relative',
-            overflow: 'hidden',
-          }}
         >
-          {/* bg color transition */}
+          {/* BG glow */}
           <motion.div
             key={`bg-${activeIndex}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.9, ease: 'easeInOut' }}
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background: `radial-gradient(ellipse at 60% 50%, ${active.accent}28 0%, transparent 70%)`,
-              pointerEvents: 'none',
-            }}
+            className="absolute inset-0 pointer-events-none"
+            style={{ background: `radial-gradient(ellipse at 60% 50%, ${active.accent}28 0%, transparent 70%)` }}
           />
 
-          {/* image stack */}
-          <div style={{
-            width: '82%',
-            aspectRatio: '3/4',
-            maxHeight: '75vh',
-            position: 'relative',
-            borderRadius: '20px',
-            overflow: 'hidden',
-          }}>
+          {/* Image container */}
+          <div
+            className="w-[80%] relative rounded-[20px] overflow-hidden"
+            style={{ aspectRatio: '3/4', maxHeight: '78vh' }}
+          >
             <AnimatePresence mode="wait">
               <motion.div
                 key={`img-${activeIndex}`}
@@ -397,39 +364,22 @@ export default function ServicesSection() {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.96, y: -20 }}
                 transition={{ duration: 0.65, ease: [0.25, 0.46, 0.45, 0.94] }}
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  borderRadius: '20px',
-                  overflow: 'hidden',
-                  cursor: 'none',
-                }}
+                className="absolute inset-0 rounded-[20px] overflow-hidden cursor-none"
                 onMouseEnter={() => setImageHovered(true)}
                 onMouseLeave={() => setImageHovered(false)}
               >
                 <img
                   src={active.img}
                   alt={active.title}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    display: 'block',
-                    transition: 'transform 0.6s ease',
-                    transform: imageHovered ? 'scale(1.04)' : 'scale(1)',
-                  }}
+                  className="w-full h-full object-cover block"
+                  style={{ transition: 'transform 0.6s ease', transform: imageHovered ? 'scale(1.04)' : 'scale(1)' }}
+                />
+                <div
+                  className="absolute inset-0 mix-blend-color pointer-events-none"
+                  style={{ background: `${active.accent}18` }}
                 />
 
-                {/* color grade */}
-                <div style={{
-                  position: 'absolute',
-                  inset: 0,
-                  background: `${active.accent}18`,
-                  mixBlendMode: 'color',
-                  pointerEvents: 'none',
-                }} />
-
-                {/* hover card overlay */}
+                {/* Hover overlay */}
                 <AnimatePresence>
                   {imageHovered && (
                     <motion.div
@@ -437,73 +387,31 @@ export default function ServicesSection() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 14 }}
                       transition={{ duration: 0.38, ease: 'easeOut' }}
-                      style={{
-                        position: 'absolute',
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        background: `linear-gradient(to top, ${active.card}f5 0%, ${active.card}cc 50%, transparent 100%)`,
-                        padding: 'clamp(20px, 3vw, 36px)',
-                        backdropFilter: 'blur(12px)',
-                      }}
+                      className="absolute bottom-0 left-0 right-0 p-7 backdrop-blur-md"
+                      style={{ background: `linear-gradient(to top, ${active.card}f5 0%, ${active.card}cc 50%, transparent 100%)` }}
                     >
-                      <div style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'flex-end',
-                        gap: '12px',
-                      }}>
+                      <div className="flex justify-between items-end gap-3">
                         <div>
-                          <span style={{
-                            display: 'inline-block',
-                            padding: '3px 10px',
-                            borderRadius: '100px',
-                            fontSize: '9px',
-                            letterSpacing: '0.15em',
-                            textTransform: 'uppercase',
-                            background: `${active.accent}30`,
-                            border: `1px solid ${active.accent}60`,
-                            color: active.accent,
-                            fontFamily: "'DM Mono', monospace",
-                            marginBottom: '10px',
-                          }}>
+                          <span
+                            className="inline-block px-2.5 py-0.5 rounded-full text-[9px] tracking-[0.15em] uppercase font-mono mb-2.5"
+                            style={{ background: `${active.accent}30`, border: `1px solid ${active.accent}60`, color: active.accent }}
+                          >
                             {active.tag}
                           </span>
-                          <h3 style={{
-                            fontSize: 'clamp(18px, 2.5vw, 26px)',
-                            fontWeight: 800,
-                            letterSpacing: '-0.03em',
-                            margin: '0 0 8px',
-                            color: '#fff',
-                            fontFamily: "'Syne', sans-serif",
-                            lineHeight: 1,
-                          }}>
+                          <h3
+                            className="text-[22px] font-extrabold tracking-[-0.03em] m-0 mb-2 text-white leading-none"
+                            style={{ fontFamily: "'Syne', sans-serif" }}
+                          >
                             {active.title}
                           </h3>
-                          <p style={{
-                            fontSize: 'clamp(11px, 1.3vw, 13px)',
-                            color: 'rgba(255,255,255,0.6)',
-                            margin: 0,
-                            lineHeight: 1.6,
-                            fontFamily: "'DM Mono', monospace",
-                            maxWidth: '28ch',
-                          }}>
+                          <p className="text-[12px] text-white/60 m-0 leading-relaxed font-mono max-w-[28ch]">
                             {active.desc}
                           </p>
                         </div>
-                        <div style={{
-                          width: 'clamp(36px, 4vw, 48px)',
-                          height: 'clamp(36px, 4vw, 48px)',
-                          borderRadius: '50%',
-                          border: `1.5px solid ${active.accent}`,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          color: active.accent,
-                          fontSize: '18px',
-                          flexShrink: 0,
-                          fontWeight: 300,
-                        }}>
+                        <div
+                          className="w-11 h-11 rounded-full flex items-center justify-center text-lg shrink-0"
+                          style={{ border: `1.5px solid ${active.accent}`, color: active.accent }}
+                        >
                           ↗
                         </div>
                       </div>
@@ -514,12 +422,11 @@ export default function ServicesSection() {
             </AnimatePresence>
           </div>
 
-          {/* custom cursor dot */}
+          {/* Custom cursor */}
           <motion.div
             style={{
               position: 'absolute',
-              x: springX,
-              y: springY,
+              x: springX, y: springY,
               pointerEvents: 'none',
               zIndex: 10,
               translateX: '-50%',
@@ -527,59 +434,32 @@ export default function ServicesSection() {
             }}
           >
             <motion.div
-              animate={{
-                scale: imageHovered ? 1 : 0,
-                opacity: imageHovered ? 1 : 0,
-              }}
+              animate={{ scale: imageHovered ? 1 : 0, opacity: imageHovered ? 1 : 0 }}
               transition={{ duration: 0.25 }}
-              style={{
-                width: '56px',
-                height: '56px',
-                borderRadius: '50%',
-                border: `1.5px solid ${active.accent}`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '10px',
-                letterSpacing: '0.12em',
-                color: active.accent,
-                fontFamily: "'DM Mono', monospace",
-                backdropFilter: 'blur(4px)',
-                background: `${active.accent}15`,
-              }}
+              className="w-14 h-14 rounded-full flex items-center justify-center text-[10px] tracking-[0.12em] font-mono backdrop-blur-sm"
+              style={{ border: `1.5px solid ${active.accent}`, color: active.accent, background: `${active.accent}15` }}
             >
               VIEW
             </motion.div>
           </motion.div>
 
-          {/* progress dots */}
-          <div style={{
-            position: 'absolute',
-            right: 'clamp(16px, 3vw, 36px)',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '10px',
-          }}>
+          {/* Progress dots */}
+          <div className="absolute right-8 top-1/2 -translate-y-1/2 flex flex-col gap-2.5">
             {projects.map((p, i) => (
               <motion.div
                 key={i}
                 animate={{
                   height: activeIndex === i ? '28px' : '6px',
-                  opacity: activeIndex === i ? 1 : 0.3,
+                  opacity: activeIndex === i ? 1 : 0.28,
                   background: activeIndex === i ? p.accent : '#ffffff',
                 }}
                 transition={{ duration: 0.4, ease: 'easeInOut' }}
-                style={{
-                  width: '3px',
-                  borderRadius: '2px',
-                }}
+                className="w-[3px] rounded-sm"
               />
             ))}
           </div>
 
-          {/* year counter */}
+          {/* Year */}
           <AnimatePresence mode="wait">
             <motion.div
               key={`year-${activeIndex}`}
@@ -587,16 +467,8 @@ export default function ServicesSection() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.4 }}
-              style={{
-                position: 'absolute',
-                bottom: 'clamp(20px, 4vh, 44px)',
-                left: 'clamp(20px, 4vw, 44px)',
-                fontFamily: "'DM Mono', monospace",
-                fontSize: '11px',
-                letterSpacing: '0.12em',
-                color: active.accent,
-                opacity: 0.8,
-              }}
+              className="absolute bottom-8 left-10 font-mono text-[11px] tracking-[0.12em] opacity-75"
+              style={{ color: active.accent }}
             >
               {active.year}
             </motion.div>
@@ -604,17 +476,8 @@ export default function ServicesSection() {
         </div>
       </div>
 
-      {/* Google Fonts */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800;900&family=DM+Mono:wght@300;400;500&display=swap');
-        * { box-sizing: border-box; }
-        @media (max-width: 767px) {
-          .right-panel { display: none !important; }
-          section > div > div:first-child { width: 100% !important; }
-        }
-        @media (min-width: 768px) and (max-width: 1024px) {
-          section > div > div:first-child { padding: 80px 32px !important; }
-        }
       `}</style>
     </section>
   )
