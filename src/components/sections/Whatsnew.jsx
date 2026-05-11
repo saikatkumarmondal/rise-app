@@ -1,5 +1,6 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
+import { gsap } from "gsap";
 import oneImg from "../../assets/one.jpg";
 import twoImg from "../../assets/two.jpg";
 import threeImg from "../../assets/three.jpg";
@@ -53,9 +54,8 @@ const ClockIcon = () => (
 
 /* ─── Arrow ─── */
 const CornerArrow = () => (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-    <line x1="7" y1="17" x2="17" y2="7" />
-    <polyline points="7 7 17 7 17 17" />
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <path d="M4 12L12 4M12 4H5M12 4V11" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
@@ -63,7 +63,6 @@ const CornerArrow = () => (
 const Avatar = ({ name }) => {
   const initials = name.split(" ").map((n) => n[0]).join("").slice(0, 2);
   const bg = name === "Ray Saddiq" ? "#2563eb" : name === "Carrie Rose" ? "#7c3aed" : "#374151";
-
   return (
     <span className="flex items-center justify-center w-6 h-6 rounded-full text-white text-[10px] font-bold"
       style={{ background: bg }}>
@@ -71,6 +70,106 @@ const Avatar = ({ name }) => {
     </span>
   );
 };
+
+/* ─── Explore Button ─── */
+function ExploreButton() {
+  const btnRef = useRef(null);
+  const textTopRef = useRef(null);
+  const textBottomRef = useRef(null);
+  const arrowRef = useRef(null);
+
+  useEffect(() => {
+    const btn = btnRef.current;
+    const textTop = textTopRef.current;
+    const textBottom = textBottomRef.current;
+    const arrow = arrowRef.current;
+    if (!btn || !textTop || !textBottom || !arrow) return;
+
+    gsap.set(textBottom, { y: "120%", opacity: 0 });
+    gsap.set(textTop, { y: "0%", opacity: 1 });
+
+    const tl = gsap.timeline({ paused: true });
+
+    tl.to(btn, { borderRadius: "8px", duration: 0.35, ease: "power2.out" }, 0)
+      .to(textTop, { y: "-120%", opacity: 0, duration: 0.3, ease: "power2.in" }, 0)
+      .to(textBottom, { y: "0%", opacity: 1, duration: 0.35, ease: "power2.out" }, 0.1)
+      .to(arrow, { x: 3, y: -3, duration: 0.3, ease: "power2.out" }, 0);
+
+    const onEnter = () => tl.play();
+    const onLeave = () => tl.reverse();
+
+    btn.addEventListener("mouseenter", onEnter);
+    btn.addEventListener("mouseleave", onLeave);
+
+    return () => {
+      btn.removeEventListener("mouseenter", onEnter);
+      btn.removeEventListener("mouseleave", onLeave);
+      tl.kill();
+    };
+  }, []);
+
+  return (
+    <a
+      ref={btnRef}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "10px",
+        background: "#fff",
+        borderRadius: "999px",
+        padding: "14px 32px",
+        cursor: "pointer",
+        textDecoration: "none",
+        overflow: "hidden",
+        position: "relative",
+        userSelect: "none",
+        border: "none",
+        outline: "none",
+        flexShrink: 0,
+      }}
+    >
+      <span style={{ position: "relative", overflow: "hidden", display: "inline-block", lineHeight: 1 }}>
+        <span
+          ref={textTopRef}
+          style={{
+            display: "block",
+            fontWeight: 800,
+            fontSize: "clamp(14px, 1.6vw, 17px)",
+            letterSpacing: "-0.02em",
+            color: "#0d0d0d",
+            whiteSpace: "nowrap",
+            fontFamily: "system-ui, sans-serif",
+          }}
+        >
+          Explore More Thoughts
+        </span>
+        <span
+          ref={textBottomRef}
+          style={{
+            display: "block",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            fontWeight: 800,
+            fontSize: "clamp(14px, 1.6vw, 17px)",
+            letterSpacing: "-0.02em",
+            color: "#0d0d0d",
+            whiteSpace: "nowrap",
+            fontFamily: "system-ui, sans-serif",
+          }}
+        >
+          Explore More Thoughts
+        </span>
+      </span>
+      <span
+        ref={arrowRef}
+        style={{ display: "inline-flex", alignItems: "center", color: "#0d0d0d" }}
+      >
+        <CornerArrow />
+      </span>
+    </a>
+  );
+}
 
 /* ═════════════════════ Card ═════════════════════ */
 function ArticleCard({ article, index }) {
@@ -107,14 +206,12 @@ function ArticleCard({ article, index }) {
         className="relative w-full rounded-xl sm:rounded-2xl overflow-hidden mb-3 sm:mb-4"
       >
         <div className="relative pb-[75%]">
-
           <motion.img
             src={article.image}
             className="absolute inset-0 w-full h-full object-cover"
             animate={{ scale: hovered ? 1.06 : 1 }}
             transition={{ duration: 0.6 }}
           />
-
           <motion.div
             className="absolute inset-0"
             style={{
@@ -122,8 +219,6 @@ function ArticleCard({ article, index }) {
               background: hovered ? "rgba(0,0,0,0.35)" : "transparent",
             }}
           />
-
-          {/* Cursor */}
           <AnimatePresence>
             {hovered && (
               <motion.div
@@ -137,7 +232,6 @@ function ArticleCard({ article, index }) {
               </motion.div>
             )}
           </AnimatePresence>
-
           {article.tag && (
             <span className="absolute top-2 sm:top-3 left-2 sm:left-3 bg-white/90 rounded-full px-2 sm:px-3 py-1 text-[10px] sm:text-xs font-semibold">
               {article.tag}
@@ -148,12 +242,11 @@ function ArticleCard({ article, index }) {
 
       {/* META */}
       <div className="flex flex-wrap gap-2 mb-2 sm:mb-3">
-        <span className="flex items-center gap-2 bg-white border rounded-full px-3 py-1 text-[11px] sm:text-[12.5px]">
+        <span className="flex items-center gap-2 bg-white rounded-full px-3 py-1 text-[11px] sm:text-[12.5px]">
           <Avatar name={article.author} />
           {article.author}
         </span>
-
-        <span className="flex items-center gap-2 bg-white border rounded-full px-3 py-1 text-[11px] sm:text-[12.5px]">
+        <span className="flex items-center gap-2 bg-white rounded-full px-3 py-1 text-[11px] sm:text-[12.5px]">
           <ClockIcon />
           {article.readTime}
         </span>
@@ -183,9 +276,7 @@ export default function WhatsNew() {
           New
         </h2>
 
-        <a className="flex items-center gap-2 bg-white border rounded-full px-4 py-2 text-sm">
-          Explore More <CornerArrow />
-        </a>
+        <ExploreButton />
       </div>
 
       {/* DIVIDER */}

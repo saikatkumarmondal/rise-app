@@ -1,16 +1,46 @@
-# React + Vite
+# Rise App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A personal portfolio-style web app built with Vite + React. Scroll-driven animations, marquee text, card stacks, and a news section — all in one page.
 
-Currently, two official plugins are available:
+**Live Demo:** _coming soon_
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+**GitHub:** [saikatkumarmondal/rise-app](https://github.com/saikatkumarmondal/rise-app)
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## What's inside
 
-## Expanding the ESLint configuration
+- Scroll-triggered card stack that exits top-left as you scroll
+- Horizontal marquee text animated with GSAP SplitText
+- "What's New" article grid with custom green cursor on hover
+- Animated button with text slide-up effect on hover
+- Fully responsive, mobile-friendly layout
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Tech used
+
+- [Vite](https://vitejs.dev/)
+- [React](https://react.dev/)
+- [GSAP](https://gsap.com/) — ScrollTrigger, SplitText
+- [Framer Motion](https://www.framer.com/motion/)
+- [Tailwind CSS](https://tailwindcss.com/)
+
+## Getting started
+
+```bash
+git clone https://github.com/saikatkumarmondal/rise-app.git
+cd rise-app
+npm install
+npm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173) and you're good.
+
+## Build for production
+
+```bash
+npm run build
+```
+
+---
+
+Made by [Saikat Kumar Mondal](https://github.com/saikatkumarmondal)

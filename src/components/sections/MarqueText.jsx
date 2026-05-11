@@ -52,22 +52,59 @@ export default function MarqueText() {
   return (
     <div
       ref={wrapperRef}
-      className="
-        overflow-hidden 
-        h-screen 
-        flex items-center
-        -mt-10 sm:-mt-12 md:-mt-16
-        -mb-10 sm:-mb-12 md:-mb-16
-      "
+      style={{
+        overflow: "hidden",
+        height: "100vh",
+        display: "flex",
+        alignItems: "center",
+        marginTop: "-4vh",
+        marginBottom: "-4vh",
+        background: "rgb(236,236,236)",
+        position: "relative",
+      }}
     >
+      {/* Subtle top fade to blend with previous section */}
+      <div style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        height: "18%",
+        background: "linear-gradient(to bottom, rgb(236,236,236), transparent)",
+        zIndex: 2,
+        pointerEvents: "none",
+      }} />
+
+      {/* Subtle bottom fade to blend with next section */}
+      <div style={{
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: "18%",
+        background: "linear-gradient(to top, rgb(236,236,236), transparent)",
+        zIndex: 2,
+        pointerEvents: "none",
+      }} />
+
       <h3
         ref={textRef}
-        className="flex w-max whitespace-nowrap font-semibold leading-tight"
         style={{
+          display: "flex",
+          width: "max-content",
+          whiteSpace: "nowrap",
+          fontWeight: 700,
+          lineHeight: 1.05,
           gap: "4vw",
           paddingLeft: "100vw",
           fontSize: "clamp(2rem, 10vw, 12rem)",
-          lineHeight: 1.1,
+          margin: 0,
+          letterSpacing: "-0.03em",
+          fontFamily: "system-ui, sans-serif",
+          color: "transparent",
+          WebkitTextStroke: "1.5px #1a1a1a",
+          position: "relative",
+          zIndex: 1,
         }}
       >
         A Proud Bangladeshi

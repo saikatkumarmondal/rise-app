@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
@@ -200,6 +200,18 @@ function CardChange() {
   // One MotionValue per card: 0 = in stack, 1 = exited top-left
   const progressMVs = useRef(CARDS.map(() => useMotionValue(0)));
 
+  // Responsive scroll height: shorter on small mobile to eliminate bottom gap
+  const [scrollHeight, setScrollHeight] = useState('350vh');
+
+  useEffect(() => {
+    const updateHeight = () => {
+      setScrollHeight(window.innerWidth < 480 ? '240vh' : '350vh');
+    };
+    updateHeight();
+    window.addEventListener('resize', updateHeight);
+    return () => window.removeEventListener('resize', updateHeight);
+  }, []);
+
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
@@ -243,7 +255,7 @@ function CardChange() {
         ref={sectionRef}
         style={{
           position: 'relative',
-          height: '350vh',
+          height: scrollHeight,
           display: 'flex',
           justifyContent: 'center',
           padding: '0 clamp(12px, 4vw, 24px)',
